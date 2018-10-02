@@ -43,6 +43,12 @@ public class Inicio {
 		frame.getContentPane().setLayout(null);
 		
 		JButton btnAdmin = new JButton("Admin");
+		btnAdmin.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				
+				
+			}
+		});
 		btnAdmin.setBounds(163, 53, 89, 23);
 		frame.getContentPane().add(btnAdmin);
 		
