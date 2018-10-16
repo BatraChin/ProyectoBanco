@@ -23,7 +23,7 @@ import com.mysql.jdbc.Connection;
 
 import ATM.Fechas;
 
-public class ClientesMorosos extends javax.swing.JInternalFrame {
+public class Deudores extends javax.swing.JInternalFrame {
 	
 	private Connection conexionBD = null;
 	private JTable tabla;
@@ -33,7 +33,7 @@ public class ClientesMorosos extends javax.swing.JInternalFrame {
 		SwingUtilities.invokeLater(new Runnable(){
 			public void run()
 			{
-				ClientesMorosos inst = new ClientesMorosos();
+				Deudores inst = new Deudores();
 	            inst.setVisible(true);
 	    		inst.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	        }
@@ -41,7 +41,7 @@ public class ClientesMorosos extends javax.swing.JInternalFrame {
 		
 	}
 	
-	public ClientesMorosos()
+	public Deudores()
 	{
 		
         conectarBD();

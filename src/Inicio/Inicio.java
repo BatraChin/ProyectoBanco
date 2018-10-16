@@ -16,7 +16,7 @@ import java.awt.event.ActionEvent;
 
 public class Inicio {
 
-	private JFrame frame;
+	private JFrame frmEbanks;
 
 	/**
 	 * Launch the application.
@@ -26,7 +26,7 @@ public class Inicio {
 			public void run() {
 				try {
 					Inicio window = new Inicio();
-					window.frame.setVisible(true);
+					window.frmEbanks.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -45,10 +45,11 @@ public class Inicio {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
-		frame = new JFrame();
-		frame.setBounds(100, 100, 450, 300);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.getContentPane().setLayout(null);
+		frmEbanks = new JFrame();
+		frmEbanks.setTitle("eBank");
+		frmEbanks.setBounds(100, 100, 315, 271);
+		frmEbanks.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frmEbanks.getContentPane().setLayout(null);
 		
 		JButton btnAdmin = new JButton("Admin");
 		btnAdmin.addActionListener(new ActionListener() {
@@ -58,8 +59,8 @@ public class Inicio {
 				admin.setVisible(true);
 			}
 		});
-		btnAdmin.setBounds(163, 53, 89, 23);
-		frame.getContentPane().add(btnAdmin);
+		btnAdmin.setBounds(72, 11, 157, 57);
+		frmEbanks.getContentPane().add(btnAdmin);
 		
 		JButton btnNewButton = new JButton("ATM");
 		btnNewButton.addActionListener(new ActionListener() {
@@ -69,8 +70,8 @@ public class Inicio {
 				admin.setVisible(true);
 			}
 		});
-		btnNewButton.setBounds(163, 106, 89, 23);
-		frame.getContentPane().add(btnNewButton);
+		btnNewButton.setBounds(72, 79, 157, 57);
+		frmEbanks.getContentPane().add(btnNewButton);
 		
 		JButton btnNewButton_1 = new JButton("Prestamos");
 		btnNewButton_1.addActionListener(new ActionListener() {
@@ -81,7 +82,7 @@ public class Inicio {
 				admin.setVisible(true);
 			}
 		});
-		btnNewButton_1.setBounds(163, 156, 89, 23);
-		frame.getContentPane().add(btnNewButton_1);
+		btnNewButton_1.setBounds(72, 147, 157, 74);
+		frmEbanks.getContentPane().add(btnNewButton_1);
 	}
 }

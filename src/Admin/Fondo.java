@@ -1,10 +1,10 @@
-package Prestamo;
+package Admin;
 
 import java.awt.Dimension;
 import java.awt.Graphics;
 import javax.swing.*;
 
-public class JDesktopPaneImagen extends JDesktopPane
+public class Fondo extends JDesktopPane
 {
 	
 		public void paintComponent(Graphics g)

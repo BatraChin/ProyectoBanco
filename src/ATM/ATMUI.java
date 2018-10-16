@@ -23,7 +23,7 @@ public class ATMUI extends javax.swing.JFrame
 {
 	
 	private Connection conexionBD=null;
-	private JDesktopPaneImagen jDesktopPane;
+	private Fondo jDesktopPane;
 	private JLabel mensajeTarjeta,mensajePin;
 	private JPasswordField passwordT,passwordP;
 	private VentanaConsultasATM ventanaConsultasATM;
@@ -65,7 +65,7 @@ public class ATMUI extends javax.swing.JFrame
 	            }
 	         });
 	        
-	        jDesktopPane = new JDesktopPaneImagen();
+	        jDesktopPane = new Fondo();
 	        jDesktopPane.setBackground(Color.WHITE);
 	        getContentPane().add(jDesktopPane, BorderLayout.CENTER);
 	        jDesktopPane.setPreferredSize(new Dimension(500, 350));

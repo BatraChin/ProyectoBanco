@@ -31,7 +31,7 @@ public class AdminUI extends JFrame
    private Consultas ventanaConsultas;
    private JPasswordField password;
    private JLabel passw;
-   private JDesktopPaneImagen jDesktopPane1;
+   private Fondo jDesktopPane1;
    
    
    /**
@@ -64,7 +64,7 @@ public class AdminUI extends JFrame
          this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     
          {
-            jDesktopPane1 = new JDesktopPaneImagen();
+            jDesktopPane1 = new Fondo();
             getContentPane().add(jDesktopPane1, BorderLayout.CENTER);
             jDesktopPane1.setPreferredSize(new java.awt.Dimension(1100,600));
             jDesktopPane1.setBackground(Color.gray);

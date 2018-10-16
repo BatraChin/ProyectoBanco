@@ -40,7 +40,7 @@ public class PrestamoUI extends javax.swing.JFrame
    private JLabel contraseña;
    protected JTextField loguearEmp;
    private JPasswordField password;
-   private JDesktopPaneImagen jDesktopPane1;
+   private Fondo jDesktopPane1;
    private JButton ingresar;
    protected Connection conexionBD = null;
    private String servidor = "localhost:3306";
@@ -93,7 +93,7 @@ public class PrestamoUI extends javax.swing.JFrame
             this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
          }
          {
-            jDesktopPane1 = new JDesktopPaneImagen();
+            jDesktopPane1 = new Fondo();
             getContentPane().add(jDesktopPane1, BorderLayout.CENTER);
             jDesktopPane1.setBackground(new Color(25, 25, 112));
             jDesktopPane1.setPreferredSize(new java.awt.Dimension(1100,600));

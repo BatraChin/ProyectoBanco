@@ -32,7 +32,7 @@ public class Tareas extends javax.swing.JInternalFrame
    private JButton list_morosos;
    private JDesktopPane jDesktopPane;
    private creacion_prestamo c_prestamo;
-   private ClientesMorosos clientes_morosos;
+   private Deudores clientes_morosos;
    private pago_cuota pago_cuota;
    private static PrestamoUI principal;
    
@@ -142,7 +142,7 @@ public class Tareas extends javax.swing.JInternalFrame
          	list_morosos.addActionListener(new ActionListener(){
              	public void actionPerformed(ActionEvent arg0)
              	{
-             		clientes_morosos = new ClientesMorosos();
+             		clientes_morosos = new Deudores();
              		clientes_morosos.setVisible(false);
              	    jDesktopPane.add(clientes_morosos);
              	   clientes_morosos.setVisible(true);
