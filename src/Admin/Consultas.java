@@ -10,6 +10,8 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -60,6 +62,8 @@ public class Consultas extends javax.swing.JInternalFrame
    private String baseDatos = "banco";
    private String usuario = "admin";
    private String clave = "admin";
+   private	Connection Connecticut;
+   private	Statement sentencia;
    
 
 	private JList<String> list;
@@ -167,8 +171,8 @@ public class Consultas extends javax.swing.JInternalFrame
 
    private void completarArbol() throws SQLException 
    {
-	   Connection c = (Connection) DriverManager.getConnection ("jdbc:mysql://"+servidor+"/"+baseDatos,usuario,clave);
-	   DatabaseMetaData md = (DatabaseMetaData) c.getMetaData();
+	   Connecticut = (Connection) DriverManager.getConnection ("jdbc:mysql://"+servidor+"/"+baseDatos,usuario,clave);
+	   DatabaseMetaData md = (DatabaseMetaData) Connecticut.getMetaData();
 	   ResultSet rs = md.getTables(null, null, "%", null);
 	   
 	   DefaultMutableTreeNode raiz = new DefaultMutableTreeNode("Tables");
@@ -263,8 +267,8 @@ public class Consultas extends javax.swing.JInternalFrame
 				tabla.setSelectSql(this.txtConsulta.getText().trim());		
 			}
 			else { //modifica la base de datos				
-				PreparedStatement pstmt = tabla.getConnection().prepareStatement(comando);
-				pstmt.execute();			
+				sentencia = Connecticut.createStatement();
+				sentencia.execute(comando);			
 				//String selec = list.getSelectedValue();
 				completarArbol();
 				//mostrarTablas();
