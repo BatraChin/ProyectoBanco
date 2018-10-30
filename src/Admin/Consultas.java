@@ -303,7 +303,27 @@ public class Consultas extends javax.swing.JInternalFrame
 	   try
 		{    
 
-		   String comando = new String(txtConsulta.getText());
+		// seteamos la consulta a partir de la cual se obtendrán los datos para llenar la tabla
+	    	  tabla.setSelectSql(this.txtConsulta.getText().trim());
+
+	    	  // obtenemos el modelo de la tabla a partir de la consulta para 
+	    	  // modificar la forma en que se muestran de algunas columnas  
+	    	  tabla.createColumnModelFromQuery();    	    
+	    	  for (int i = 0; i < tabla.getColumnCount(); i++)
+	    	  { // para que muestre correctamente los valores de tipo TIME (hora)  		   		  
+	    		 if	 (tabla.getColumn(i).getType()==Types.TIME)  
+	    		 {    		 
+	    		  tabla.getColumn(i).setType(Types.CHAR);  
+	  	       	 }
+	    		 // cambiar el formato en que se muestran los valores de tipo DATE
+	    		 if	 (tabla.getColumn(i).getType()==Types.DATE)
+	    		 {
+	    		    tabla.getColumn(i).setDateFormat("dd/MM/YYYY");
+	    		 }
+	          }  
+	    	  // actualizamos el contenido de la tabla.   	     	  
+	    	  tabla.refresh();
+		   /*String comando = new String(txtConsulta.getText());
 			if(txtConsulta.getText(0, 6).toLowerCase().equals("select")){// Si el comando no modifica la base de datos, ingresa aqui.							 
 				// seteamos la consulta a partir de la cual se obtendrán los datos para llenar la tabla
 				tabla.setSelectSql(this.txtConsulta.getText().trim());		
@@ -314,8 +334,8 @@ public class Consultas extends javax.swing.JInternalFrame
 				String selec = list.getSelectedValue();
 				mostrarTablas();
 				list.setSelectedIndex(DLM.indexOf(selec));
-			}
-			if(tabla.getSelectSql() != null) {
+			}*/
+			/*if(tabla.getSelectSql() != null) {
 				tabla.createColumnModelFromQuery();    	    
 				for (int i = 0; i < tabla.getColumnCount(); i++)
 				{	   		  
@@ -328,8 +348,8 @@ public class Consultas extends javax.swing.JInternalFrame
 						tabla.getColumn(i).setDateFormat("dd/MM/YYYY");
 					}
 				}				
-				tabla.refresh();
-			}
+				tabla.refresh();*/
+			//}
 		}
 		catch (SQLException ex)
 		{
@@ -342,8 +362,6 @@ public class Consultas extends javax.swing.JInternalFrame
 					"Error al ejecutar la consulta.",
 					JOptionPane.ERROR_MESSAGE);
 
-		} catch (BadLocationException e) {
-			e.printStackTrace();
 		}
 	}
 	   
