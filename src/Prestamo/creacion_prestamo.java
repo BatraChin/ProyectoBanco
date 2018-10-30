@@ -166,12 +166,12 @@ public class creacion_prestamo extends javax.swing.JInternalFrame
       		
       		periodo_lab = new JLabel("Período");
       		periodo_lab.setForeground(new Color(255, 255, 224));
-      	    periodo_lab.setBounds(50,80,100,20);
+      	    periodo_lab.setBounds(311,270,100,20);
       	    periodo_lab.setVisible(false);
       	    jDesktopPane2.add(periodo_lab);
       	    
       	    periodo = new JTextField();
-      	    periodo.setBounds(100,80,100,20);
+      	    periodo.setBounds(421,270,100,20);
     	    periodo.setVisible(false);
     	    jDesktopPane2.add(periodo);
     	    
@@ -239,7 +239,7 @@ public class creacion_prestamo extends javax.swing.JInternalFrame
             });
       	    
       		monto = new JTextField();
-      		monto.setBounds(100,50,100,20);
+      		monto.setBounds(254,212,100,20);
       		monto.setVisible(false);
       		jDesktopPane2.add(monto);
       		monto.addActionListener(new ActionListener(){
@@ -273,7 +273,7 @@ public class creacion_prestamo extends javax.swing.JInternalFrame
       		
       		monto_lab=new JLabel("Monto");
       		monto_lab.setForeground(new Color(255, 255, 224));
-      		monto_lab.setBounds(50,50,100,20);
+      		monto_lab.setBounds(185,212,100,20);
       		monto_lab.setVisible(false);
       		jDesktopPane2.add(monto_lab);
       		
@@ -390,12 +390,7 @@ public class creacion_prestamo extends javax.swing.JInternalFrame
     	   
     	   return 2;
        }
-       
-       
-      
    
-      
-       
    }
    
    public void tasa_prestamo() throws SQLException

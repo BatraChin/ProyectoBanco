@@ -4,6 +4,9 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -32,12 +35,12 @@ public class AdminUI extends JFrame
    private JPasswordField password;
    private JLabel passw;
    private Fondo jDesktopPane1;
-   
+   private JFrame inicio;
    
    /**
    * Auto-generated main method to display this JFrame
    */
-   public static void main(String[] args) 
+   /**public static void main(String[] args) 
    {
       SwingUtilities.invokeLater(new Runnable(){
          public void run() 
@@ -47,11 +50,12 @@ public class AdminUI extends JFrame
             inst.setVisible(true);
          }
       });
-   }
+   }*/
    
-   public AdminUI() 
+   public AdminUI(JFrame ini) 
    {
       super();
+      inicio=ini;
       initGUI();
    }
    
@@ -61,7 +65,7 @@ public class AdminUI extends JFrame
       {
          javax.swing.UIManager.setLookAndFeel(javax.swing.UIManager.getSystemLookAndFeelClassName());
          this.setTitle("Banco");
-         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+         //this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     
          {
             jDesktopPane1 = new Fondo();
@@ -73,7 +77,7 @@ public class AdminUI extends JFrame
         
          {
         	 passw=new JLabel("Password");
-        	 passw.setForeground(Color.WHITE);
+        	 passw.setForeground(Color.black);
         	 passw.setBackground(Color.WHITE);
         	 passw.setSize(200,200);
         	 passw.setBounds(520,310,200,40);
@@ -83,6 +87,13 @@ public class AdminUI extends JFrame
          {
         	 password = new JPasswordField();
         	 password.setBounds(460,350,200,30);
+        	 
+        	 this.addWindowListener(new WindowAdapter(){
+                 public void windowClosing(WindowEvent e){
+                     inicio.setEnabled(true);
+                    
+                 }
+             });
             
         	 jDesktopPane1.add(password);
         	 password.addActionListener(new ActionListener(){
