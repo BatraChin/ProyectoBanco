@@ -107,6 +107,11 @@ public class Consultas extends javax.swing.JInternalFrame
          flowLayout.setAlignOnBaseline(true);
          flowLayout.setHgap(4);
          pnlConsulta.setBackground(Color.LIGHT_GRAY);
+         
+         DLM = new DefaultListModel<String>();
+		 list = new JList<String>(DLM);  
+         
+         
          getContentPane().add(pnlConsulta, BorderLayout.NORTH);
          {
         	 btnEjecutar = new JButton();
@@ -168,7 +173,44 @@ public class Consultas extends javax.swing.JInternalFrame
          e.printStackTrace();
       }
    }
-
+   public void mostrarColumnas() {
+		DLM_1.clear();
+		if(DLM.getSize()> 0) {         			
+			String selected = (String) list.getSelectedValue();
+			selected = "'"+selected+"'";
+			Statement st = null;
+			ResultSet rs = null;
+			try {
+				st = (Statement) tabla.getConnection().createStatement();
+				rs = st.executeQuery("SELECT COLUMN_NAME FROM "
+						+ "INFORMATION_SCHEMA.COLUMNS "
+						+ "WHERE TABLE_SCHEMA='parquimetros' "
+						+ "AND TABLE_NAME="+selected );
+				boolean sig = rs.first();
+				while(sig) {
+					DLM_1.addElement(rs.getString(1));
+					sig = rs.next();
+				}
+			} catch (SQLException ex) {
+				salidaError(ex);
+			}  finally {
+				if(st != null) {
+					try {
+						st.close();
+					} catch (SQLException ex) {
+						salidaError(ex);
+					}
+				}
+				if(rs != null) {
+					try {
+						rs.close();
+					} catch (SQLException ex) {
+						salidaError(ex);
+					}
+				}
+			}         			        			
+		}
+	}
    private void completarArbol() throws SQLException 
    {
 	   Connecticut = (Connection) DriverManager.getConnection ("jdbc:mysql://"+servidor+"/"+baseDatos,usuario,clave);
