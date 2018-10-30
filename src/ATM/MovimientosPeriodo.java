@@ -32,7 +32,7 @@ public class MovimientosPeriodo extends javax.swing.JFrame
 	public MovimientosPeriodo(int nroTarjeta, String desde, String hasta)
 	{
 		super();
-		setTitle("\u00DAltimos Movimientos");
+		setTitle("Movimientos por Periodos");
 		getContentPane().setBackground(Color.WHITE);
 		setSize(600, 300);
 		conectarBD();
@@ -120,7 +120,7 @@ public class MovimientosPeriodo extends javax.swing.JFrame
 					else if (j == 4 && flag)
 					{
 						BigDecimal monto = (BigDecimal) rs.getObject(j);
-						//monto = monto.multiply(new BigDecimal("-1"));
+						monto = monto.multiply(new BigDecimal("-1"));
 						fila.add(monto);
 						flag = false;
 
