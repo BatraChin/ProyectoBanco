@@ -120,7 +120,8 @@ public class MovimientosPeriodo extends javax.swing.JFrame
 					else if (j == 4 && flag)
 					{
 						BigDecimal monto = (BigDecimal) rs.getObject(j);
-						if ((String) rs.getObject(j-1) != "Deposito")
+						//SI NO ES UN DEPOSITO, EL MONTO DEBE SER NEGATIVO
+						if (!(  (String) rs.getObject(j-1)  ).equals("deposito"))
 							monto = monto.multiply(new BigDecimal("-1"));
 						fila.add(monto);
 						flag = false;
