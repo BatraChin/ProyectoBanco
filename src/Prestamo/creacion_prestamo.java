@@ -42,6 +42,7 @@ import com.mysql.jdbc.DatabaseMetaData;
 
 
 import javax.swing.JOptionPane;
+import javax.swing.JComboBox;
 
 /**
 * This code was edited or generated using CloudGarden's Jigloo
@@ -61,7 +62,6 @@ public class creacion_prestamo extends javax.swing.JInternalFrame
 {
   
    private JDesktopPane jDesktopPane2;
-   private JTextField tipodoc;
    private JTextField nrodoc;
    private JLabel tipodoc_lab;
    private JLabel nrodoc_lab; 
@@ -86,8 +86,13 @@ public class creacion_prestamo extends javax.swing.JInternalFrame
    private static PrestamoUI principal;
    private int nroC = 0;
    private JLabel datos;
+   private JComboBox comboBox;
+   private JLabel label;
+   private JComboBox comboPeriodo;
+   private JButton btnIngresarMonto;
    Date myDate ;
    String strDate;
+   private JButton btnPeriodo;
 
    /**
    * Auto-generated main method to display this JFrame
@@ -142,70 +147,153 @@ public class creacion_prestamo extends javax.swing.JInternalFrame
       		getContentPane().add(jDesktopPane2, BorderLayout.CENTER);
       		jDesktopPane2.setPreferredSize(new java.awt.Dimension(1100,700));
       		jDesktopPane2.setEnabled(false);
-      
-      		tipodoc = new JTextField();
-      		tipodoc.setBackground(new Color(255, 255, 224));
-      		tipodoc.setBounds(900,50,100,20);
-      		jDesktopPane2.add(tipodoc);
           
       		nrodoc = new JTextField();
-      		nrodoc.setBounds(900, 100,100,20);
+      		nrodoc.setBounds(421, 116,100,20);
       		jDesktopPane2.add(nrodoc);
           
       		tipodoc_lab = new JLabel("Tipo doc Cliente");
       		tipodoc_lab.setForeground(new Color(255, 255, 224));
-      		tipodoc_lab.setFont(new Font("Univers 45 Light", Font.PLAIN, 11));
-      		tipodoc_lab.setBounds(800,50,100,30);
+      		tipodoc_lab.setFont(new Font("Tahoma", Font.PLAIN, 12));
+      		tipodoc_lab.setBounds(311,69,100,30);
       		jDesktopPane2.add(tipodoc_lab);
       
       		nrodoc_lab = new JLabel("Número doc Cliente");
       		nrodoc_lab.setForeground(new Color(255, 255, 224));
-      		nrodoc_lab.setFont(new Font("Univers 45 Light", Font.PLAIN, 11));
-      		nrodoc_lab.setBounds(800,100,100,30);
+      		nrodoc_lab.setFont(new Font("Tahoma", Font.PLAIN, 12));
+      		nrodoc_lab.setBounds(297,110,114,30);
       		jDesktopPane2.add(nrodoc_lab);
       		
       		periodo_lab = new JLabel("Período");
+      		periodo_lab.setFont(new Font("Tahoma", Font.PLAIN, 12));
       		periodo_lab.setForeground(new Color(255, 255, 224));
-      	    periodo_lab.setBounds(311,270,100,20);
-      	    periodo_lab.setVisible(false);
+      	    periodo_lab.setBounds(343,269,68,20);
+      	    periodo_lab.setVisible(true);
       	    jDesktopPane2.add(periodo_lab);
       	    
-      	    periodo = new JTextField();
-      	    periodo.setBounds(421,270,100,20);
-    	    periodo.setVisible(false);
-    	    jDesktopPane2.add(periodo);
-    	    
     	    datos=new JLabel("");
     	    datos.setVisible(false);
     	    datos.setForeground(new Color(255, 255, 224));
-    	    datos.setBounds(50,100,800,600);
+    	    datos.setBounds(50,339,672,220);
     	    jDesktopPane2.add(datos);
-    	    
-    	    periodo.addActionListener(new ActionListener(){
+
+      		monto = new JTextField();
+      		monto.setEnabled(false);
+      		monto.setBounds(421,206,100,20);
+      		monto.setVisible(true);
+      		jDesktopPane2.add(monto);
+      		
+      		
+      		monto_lab=new JLabel("Monto");
+      		monto_lab.setFont(new Font("Tahoma", Font.PLAIN, 12));
+      		monto_lab.setForeground(new Color(255, 255, 224));
+      		monto_lab.setBounds(343,205,68,20);
+      		monto_lab.setVisible(false);
+      		jDesktopPane2.add(monto_lab);
+      		
+      		ingresar= new JButton("Ingresar cliente");
+      		ingresar.setBounds(421,147,121,20);
+      		jDesktopPane2.add(ingresar);
+      		
+      		comboBox = new JComboBox();
+      		comboBox.setMaximumRowCount(2);
+      		comboBox.setFont(new Font("Tahoma", Font.PLAIN, 12));
+      		comboBox.setBounds(421, 74, 100, 20);
+      		comboBox.addItem("LE");
+      		comboBox.addItem("DNI");
+      		jDesktopPane2.add(comboBox);
+      		
+      		label = new JLabel("");
+      		label.setBounds(531, 206, 258, 14);
+      		label.setVisible(true);
+      		jDesktopPane2.add(label);
+      		
+      		btnIngresarMonto = new JButton("Ingresar monto");
+      		btnIngresarMonto.setEnabled(false);
+      		btnIngresarMonto.setBounds(421, 236, 121, 23);
+      		btnIngresarMonto.addActionListener(new ActionListener(){
              	public void actionPerformed(ActionEvent arg0)
              	{
              		try 
              		{
              			monto_pedido= monto.getText();
-						valor_periodo=periodo.getText();
+             			if((Double.parseDouble(monto_pedido)>Double.parseDouble(monto_superior)) || 
+								(Double.parseDouble(monto_pedido)<Double.parseDouble(monto_inferior)))
+						{
+							JOptionPane.showMessageDialog(null, "El monto ingresado es incorrecto.");
+							btnIngresarMonto.setEnabled(true);
+							monto.setText("");
+						}
+             			else
+						{
+             			periodo_prestamo();
+						int i=0;
+						String periodos_mostrar="";
+						while(i<periodos.length)
+						{
+							periodos_mostrar=periodos_mostrar+" "+periodos[i];
+							i++;
+						}
+						
+						/**JOptionPane.showMessageDialog(null, "Ingrese período a pagar\n. El período debe corresponder a:"+
+								periodos_mostrar+ " meses.");*/
+						comboPeriodo.setEnabled(true);
+						for(Object objeto : periodos) {
+						    comboPeriodo.addItem(objeto.toString());
+						}
+						monto.setEnabled(false);
+						btnIngresarMonto.setEnabled(false);
+						btnPeriodo.setEnabled(true);
+	
+						}
+             		} 
+             		catch (HeadlessException|SQLException e)
+             		{
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+             	 
+             	}
+            });
+      		jDesktopPane2.add(btnIngresarMonto);
+      		
+      		comboPeriodo = new JComboBox();
+      		comboPeriodo.setBounds(421, 270, 100, 20);
+      		comboPeriodo.setEnabled(false);
+      		
+      		jDesktopPane2.add(comboPeriodo);
+      		
+      		btnPeriodo = new JButton("Ingresar periodo");
+      		btnPeriodo.setEnabled(false);
+      		btnPeriodo.setBounds(421, 301, 121, 23);
+      		
+      		btnPeriodo.addActionListener(new ActionListener() {
+      	
+      			public void actionPerformed(ActionEvent arg0)
+      			{
+      				      				
+     				try 
+             		{
+						valor_periodo=comboPeriodo.getSelectedItem().toString();
 						
 						
 						boolean encontre=false;
 						int j=0;
-						while((j<periodos.length) && !encontre)
+						
+						/**while((j<periodos.length) && !encontre)
 						{
 							encontre=Integer.parseInt(periodos[j])==Integer.parseInt(valor_periodo);
 							j++;
 						}
 						if((Double.parseDouble(monto_pedido)>Double.parseDouble(monto_superior)) || 
-								(Double.parseDouble(monto_pedido)<Double.parseDouble(monto_inferior))||(!encontre))
+								(Double.parseDouble(monto_pedido)<Double.parseDouble(monto_inferior)))
 						{
-							JOptionPane.showMessageDialog(null, "Los valores ingresados son incorrectos.");
-							periodo.setText("");
+							JOptionPane.showMessageDialog(null, "El monto ingresado es incorrecto.");
+							btnIngresarMonto.setEnabled(true);
 							monto.setText("");
 						}
 						else
-						{
+						{*/
 							tasa_interes();
 							crear_Prestamo();
 							JOptionPane.showMessageDialog(null, "El préstamo se efectuó correctamente.");
@@ -216,14 +304,18 @@ public class creacion_prestamo extends javax.swing.JInternalFrame
 							    	setClosed(true);
 							    } else if (response == JOptionPane.YES_OPTION) {
 							    	monto.setText("");
-									periodo.setText("");
-									tipodoc.setText("");
+							    	monto.setEnabled(false);
+									comboPeriodo.removeAll();
+									comboPeriodo.setEnabled(false);
 									nrodoc.setText("");
+									nrodoc.setEnabled(true);
+									btnPeriodo.setEnabled(false);
+									
 							    } else if (response == JOptionPane.CLOSED_OPTION) {
 							      
 							    }
 							
-						}
+						//}
 		
 					} 
              		catch (HeadlessException | SQLException e)
@@ -234,52 +326,15 @@ public class creacion_prestamo extends javax.swing.JInternalFrame
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					} 
-             	 
-             	}
-            });
-      	    
-      		monto = new JTextField();
-      		monto.setBounds(254,212,100,20);
-      		monto.setVisible(false);
-      		jDesktopPane2.add(monto);
-      		monto.addActionListener(new ActionListener(){
-             	public void actionPerformed(ActionEvent arg0)
-             	{
-             		try 
-             		{
-						periodo_prestamo();
-						int i=0;
-						String periodos_mostrar="";
-						while(i<periodos.length)
-						{
-							periodos_mostrar=periodos_mostrar+" "+periodos[i];
-							i++;
-						}
-						
-						JOptionPane.showMessageDialog(null, "Ingrese período a pagar\n. El período debe corresponder a:"+
-								periodos_mostrar+ " meses.");
-						periodo.setVisible(true);
-						periodo_lab.setVisible(true);
-	
-					} 
-             		catch (HeadlessException|SQLException e)
-             		{
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-             	 
-             	}
-            });
+      				
+      				
+      				
+      			}
+      		}     				
+      				
+      		);
       		
-      		monto_lab=new JLabel("Monto");
-      		monto_lab.setForeground(new Color(255, 255, 224));
-      		monto_lab.setBounds(185,212,100,20);
-      		monto_lab.setVisible(false);
-      		jDesktopPane2.add(monto_lab);
-      		
-      		ingresar= new JButton("Ingresar");
-      		ingresar.setBounds(910,140,80,20);
-      		jDesktopPane2.add(ingresar);
+      		jDesktopPane2.add(btnPeriodo);
       		ingresar.addActionListener(new ActionListener(){
              	public void actionPerformed(ActionEvent arg0)
              	{
@@ -295,18 +350,19 @@ public class creacion_prestamo extends javax.swing.JInternalFrame
 							if(j==1)
 							{
 								tasa_prestamo();
-								JOptionPane.showMessageDialog(null, "Ingrese monto.\n El valor debe estar en el rango ["+
-											monto_inferior+","+monto_superior+"]");
-								monto.setVisible(true);
-								monto_lab.setVisible(true);
+								//JOptionPane.showMessageDialog(null, "Ingrese monto.\n El valor debe estar en el rango ["+
+								//			monto_inferior+","+monto_superior+"]");
+								label.setText("Valor entre ["+monto_inferior+","+monto_superior+"]");
+								ingresar.setEnabled(false);
+								btnIngresarMonto.setEnabled(true);
+								comboBox.setEnabled(false);
+								nrodoc.setEnabled(false);
+								monto.setEnabled(true);
 							}
 							else
 							{
 								
-							}
-							
-							
-							
+							}					
 						}
 					} catch (HeadlessException | SQLException | PropertyVetoException e) {
 						// TODO Auto-generated catch block
@@ -314,10 +370,7 @@ public class creacion_prestamo extends javax.swing.JInternalFrame
 					}
              	 
              	}
-            });
-     
-      		
-       
+            });    
    }
 
    private void conectarBD()
@@ -359,7 +412,7 @@ public class creacion_prestamo extends javax.swing.JInternalFrame
 	   
        String sql = "SELECT nro_cliente " + 
                     "FROM cliente " +
-                    "WHERE nro_doc = "+ Integer.parseInt(nrodoc.getText())+" AND tipo_doc LIKE '%"+ tipodoc.getText()+"%' "; 
+                    "WHERE nro_doc = "+ Integer.parseInt(nrodoc.getText())+" AND tipo_doc LIKE '%"+ comboBox.getSelectedItem().toString()+"%' "; 
        
        ResultSet rs = stmt.executeQuery(sql);
        
@@ -385,7 +438,6 @@ public class creacion_prestamo extends javax.swing.JInternalFrame
        else
        {
     	   JOptionPane.showMessageDialog(null, "Cliente no válido");
-    	   tipodoc.setText("");
     	   nrodoc.setText("");
     	   
     	   return 2;
@@ -443,10 +495,7 @@ public class creacion_prestamo extends javax.swing.JInternalFrame
 	   {
 		   periodos[i]=rs.getString("periodo");
 		   i++;
-	   }
-	   
-	 
-	   
+	   }	   
    }
    
    public void tasa_interes() throws SQLException
@@ -559,8 +608,4 @@ public class creacion_prestamo extends javax.swing.JInternalFrame
 	   
 	   
    }
-   
-   
-   
- 
 }
