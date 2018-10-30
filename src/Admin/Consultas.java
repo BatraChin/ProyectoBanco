@@ -154,7 +154,6 @@ public class Consultas extends javax.swing.JInternalFrame
              pnlConsulta.add(scrConsulta);
          }
          {
-        	 completarArbol();
         	 pnlConsulta.add(tree);
          }
          
@@ -173,75 +172,8 @@ public class Consultas extends javax.swing.JInternalFrame
          e.printStackTrace();
       }
    }
-   public void mostrarColumnas() {
-		DLM_1.clear();
-		if(DLM.getSize()> 0) {         			
-			String selected = (String) list.getSelectedValue();
-			selected = "'"+selected+"'";
-			Statement st = null;
-			ResultSet rs = null;
-			try {
-				st = (Statement) tabla.getConnection().createStatement();
-				rs = st.executeQuery("SELECT COLUMN_NAME FROM "
-						+ "INFORMATION_SCHEMA.COLUMNS "
-						+ "WHERE TABLE_SCHEMA='parquimetros' "
-						+ "AND TABLE_NAME="+selected );
-				boolean sig = rs.first();
-				while(sig) {
-					DLM_1.addElement(rs.getString(1));
-					sig = rs.next();
-				}
-			} catch (SQLException ex) {
-				salidaError(ex);
-			}  finally {
-				if(st != null) {
-					try {
-						st.close();
-					} catch (SQLException ex) {
-						salidaError(ex);
-					}
-				}
-				if(rs != null) {
-					try {
-						rs.close();
-					} catch (SQLException ex) {
-						salidaError(ex);
-					}
-				}
-			}         			        			
-		}
-	}
-   private void completarArbol() throws SQLException 
-   {
-	   Connecticut = (Connection) DriverManager.getConnection ("jdbc:mysql://"+servidor+"/"+baseDatos,usuario,clave);
-	   DatabaseMetaData md = (DatabaseMetaData) Connecticut.getMetaData();
-	   ResultSet rs = md.getTables(null, null, "%", null);
-	   
-	   DefaultMutableTreeNode raiz = new DefaultMutableTreeNode("Tables");
-	   DefaultTreeModel modelo = new DefaultTreeModel(raiz);
-		       
-	   tree = new JTree(modelo);
-	   tree.setBorder(new CompoundBorder());
-	   tree.setForeground(Color.BLACK);
-	   tree.setFont(new Font("Univers 45 Light", Font.PLAIN, 11));
-	   tree.setBackground(Color.WHITE);
-	   while (rs.next()) 
-	   {  	
-		   DefaultMutableTreeNode NODO = new DefaultMutableTreeNode(""+rs.getString(3));    	
-		   modelo.insertNodeInto(NODO,raiz, 0);
-		   String nomtabla = rs.getString(1);
-		   String tabla = rs.getString(3);
-		   ResultSet ra = md.getColumns(nomtabla, null, tabla, null);
-		   while(ra.next())
-		   {
-			   DefaultMutableTreeNode nodohijo=new DefaultMutableTreeNode(""+ra.getString(4));
-			   modelo.insertNodeInto(nodohijo, NODO,0);
-			    		
-		   }
-			    	
-	   }
-	
-   }
+   
+  
 
    private void thisComponentShown(ComponentEvent evt) 
    {
@@ -303,12 +235,13 @@ public class Consultas extends javax.swing.JInternalFrame
 	   try
 		{    
 
-		// seteamos la consulta a partir de la cual se obtendrán los datos para llenar la tabla
+		   // seteamos la consulta a partir de la cual se obtendrán los datos para llenar la tabla
 	    	  tabla.setSelectSql(this.txtConsulta.getText().trim());
 
 	    	  // obtenemos el modelo de la tabla a partir de la consulta para 
 	    	  // modificar la forma en que se muestran de algunas columnas  
-	    	  tabla.createColumnModelFromQuery();    	    
+	    	  tabla.createColumnModelFromQuery(); 
+	    	  
 	    	  for (int i = 0; i < tabla.getColumnCount(); i++)
 	    	  { // para que muestre correctamente los valores de tipo TIME (hora)  		   		  
 	    		 if	 (tabla.getColumn(i).getType()==Types.TIME)  
@@ -323,33 +256,7 @@ public class Consultas extends javax.swing.JInternalFrame
 	          }  
 	    	  // actualizamos el contenido de la tabla.   	     	  
 	    	  tabla.refresh();
-		   /*String comando = new String(txtConsulta.getText());
-			if(txtConsulta.getText(0, 6).toLowerCase().equals("select")){// Si el comando no modifica la base de datos, ingresa aqui.							 
-				// seteamos la consulta a partir de la cual se obtendrán los datos para llenar la tabla
-				tabla.setSelectSql(this.txtConsulta.getText().trim());		
-			}
-			else { //modifica la base de datos				
-				PreparedStatement pstmt = tabla.getConnection().prepareStatement(comando);
-				pstmt.execute();			
-				String selec = list.getSelectedValue();
-				mostrarTablas();
-				list.setSelectedIndex(DLM.indexOf(selec));
-			}*/
-			/*if(tabla.getSelectSql() != null) {
-				tabla.createColumnModelFromQuery();    	    
-				for (int i = 0; i < tabla.getColumnCount(); i++)
-				{	   		  
-					if	 (tabla.getColumn(i).getType()==Types.TIME)  
-					{    		 
-						tabla.getColumn(i).setType(Types.CHAR);  
-					}
-					if	 (tabla.getColumn(i).getType()==Types.DATE)
-					{
-						tabla.getColumn(i).setDateFormat("dd/MM/YYYY");
-					}
-				}				
-				tabla.refresh();*/
-			//}
+		   
 		}
 		catch (SQLException ex)
 		{
@@ -367,55 +274,8 @@ public class Consultas extends javax.swing.JInternalFrame
 	   
 	   
    
-   private void mostrarTablas() {
-		DLM.clear();
-		Statement st = null;
-		ResultSet rs = null;
-		try {         				
-			st = (Statement) tabla.getConnection().createStatement();
-			rs = st.executeQuery("SELECT table_name FROM "
-					+ "information_schema.tables where "
-					+ "table_schema='parquimetros'");
-			boolean sig = rs.first();
-			while(sig) {
-				DLM.addElement(rs.getString(1));
-				sig = rs.next();												
-			}      			
-		} catch (SQLException ex) {
-			salidaError(ex);
-		} catch (NullPointerException ex2){
-			JOptionPane.showMessageDialog(null,
-					"Error",
-					"Error",
-					JOptionPane.ERROR_MESSAGE);
-		}
-		finally {					
-			if(st != null) {
-				try {
-					st.close();
-				} catch (SQLException ex) {
-					salidaError(ex);
-				}
-			}
-			if(rs != null) {
-				try {
-					rs.close();
-				} catch (SQLException ex) {
-					salidaError(ex);
-				}
-			}
-		}
-	}
    
-   private void salidaError(SQLException ex) {
-		JOptionPane.showMessageDialog(null,
-				ex.getMessage(),
-				"Error",
-				JOptionPane.ERROR_MESSAGE);
-		System.out.println("SQLException: " + ex.getMessage());
-		System.out.println("SQLState: " + ex.getSQLState());
-		System.out.println("VendorError: " + ex.getErrorCode());
-	}
+   
    
   }
 
