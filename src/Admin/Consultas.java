@@ -7,10 +7,13 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.sql.Types;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.swing.BorderFactory;
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -22,8 +25,6 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import com.mysql.jdbc.Connection;
 import com.mysql.jdbc.DatabaseMetaData;
-import com.mysql.jdbc.PreparedStatement;
-
 import quick.dbtable.*;
 import javax.swing.JTree;
 import java.awt.Font;
@@ -59,6 +60,12 @@ public class Consultas extends javax.swing.JInternalFrame
    private String baseDatos = "banco";
    private String usuario = "admin";
    private String clave = "admin";
+   
+
+	private JList<String> list;
+	private JList<String> list_1;
+	private DefaultListModel<String> DLM;
+	private DefaultListModel<String> DLM_1;
  
    public Consultas() 
    {
@@ -105,12 +112,7 @@ public class Consultas extends javax.swing.JInternalFrame
              btnEjecutar.addActionListener(new ActionListener(){
                   public void actionPerformed(ActionEvent evt)
                   {
-                     try {
-						btnEjecutarActionPerformed(evt);
-					} catch (BadLocationException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
+                     btnEjecutarActionPerformed(evt);
                   }
              });
          }
@@ -205,7 +207,7 @@ public class Consultas extends javax.swing.JInternalFrame
       this.desconectarBD();
    }
 
-   private void btnEjecutarActionPerformed(ActionEvent evt) throws BadLocationException 
+   private void btnEjecutarActionPerformed(ActionEvent evt) 
    {
       this.refrescarTabla();      
    }
@@ -249,20 +251,64 @@ public class Consultas extends javax.swing.JInternalFrame
          }      
    }
 
-   private void refrescarTabla() throws BadLocationException
+   private void refrescarTabla()
    {
-      try
-      {  
-    	  if(txtConsulta.getText(0, 6).toLowerCase().equals("select")){// Si el comando no modifica la base de datos, ingresa aqui.							 
-	    	  tabla.setSelectSql(this.txtConsulta.getText().trim());
-	    	  completarArbol();  
-	    	  tabla.createColumnModelFromQuery();    	    
-    	  }
-    	  else {
-    		 	PreparedStatement pstmt = (PreparedStatement) tabla.getConnection().prepareStatement(txtConsulta.getText());
-  				pstmt.execute();			
-  				
-  			}
+	   
+	   try
+		{    
+
+			String comando = new String(txtConsulta.getText());
+			if(txtConsulta.getText(0, 6).toLowerCase().equals("select")){// Si el comando no modifica la base de datos, ingresa aqui.							 
+				// seteamos la consulta a partir de la cual se obtendrn los datos para llenar la tabla
+				tabla.setSelectSql(this.txtConsulta.getText().trim());		
+			}
+			else { //modifica la base de datos				
+				PreparedStatement pstmt = tabla.getConnection().prepareStatement(comando);
+				pstmt.execute();			
+				//String selec = list.getSelectedValue();
+				completarArbol();
+				//mostrarTablas();
+				//list.setSelectedIndex(DLM.indexOf(selec));
+			}
+			if(tabla.getSelectSql() != null) {
+				tabla.createColumnModelFromQuery();    	    
+				for (int i = 0; i < tabla.getColumnCount(); i++)
+				{	   		  
+					if	 (tabla.getColumn(i).getType()==Types.TIME)  
+					{    		 
+						tabla.getColumn(i).setType(Types.CHAR);  
+					}
+					if	 (tabla.getColumn(i).getType()==Types.DATE)
+					{
+						tabla.getColumn(i).setDateFormat("dd/MM/YYYY");
+					}
+				}				
+				tabla.refresh();
+			}
+		}
+		catch (SQLException ex)
+		{
+			// en caso de error, se muestra la causa en la consola
+			System.out.println("SQLException: " + ex.getMessage());
+			System.out.println("SQLState: " + ex.getSQLState());
+			System.out.println("VendorError: " + ex.getErrorCode());
+			JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this),
+					ex.getMessage() + "\n", 
+					"Error al ejecutar la consulta.",
+					JOptionPane.ERROR_MESSAGE);
+
+		} catch (BadLocationException e) {
+			e.printStackTrace();
+		}
+	}
+	   
+	   
+   }
+     /* try
+      {    
+    	  tabla.setSelectSql(this.txtConsulta.getText().trim());
+    	  completarArbol();  
+    	  tabla.createColumnModelFromQuery();    	    
     	  for (int i = 0; i < tabla.getColumnCount(); i++)
     	  { 		   		  
     		 if	 (tabla.getColumn(i).getType()==Types.TIME)  
@@ -286,5 +332,5 @@ public class Consultas extends javax.swing.JInternalFrame
                                        "Error al ejecutar la consulta.",
                                        JOptionPane.ERROR_MESSAGE); 
       } 
-   } 
-}
+   } */
+
