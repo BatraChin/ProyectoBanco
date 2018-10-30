@@ -22,12 +22,15 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import com.mysql.jdbc.Connection;
 import com.mysql.jdbc.DatabaseMetaData;
+import com.mysql.jdbc.PreparedStatement;
+
 import quick.dbtable.*;
 import javax.swing.JTree;
 import java.awt.Font;
 import javax.swing.border.CompoundBorder;
 import java.awt.FlowLayout;
-import javax.swing.border.EtchedBorder;  
+import javax.swing.border.EtchedBorder;
+import javax.swing.text.BadLocationException;  
 
 /**
 * This code was edited or generated using CloudGarden's Jigloo
@@ -102,7 +105,12 @@ public class Consultas extends javax.swing.JInternalFrame
              btnEjecutar.addActionListener(new ActionListener(){
                   public void actionPerformed(ActionEvent evt)
                   {
-                     btnEjecutarActionPerformed(evt);
+                     try {
+						btnEjecutarActionPerformed(evt);
+					} catch (BadLocationException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
                   }
              });
          }
@@ -197,7 +205,7 @@ public class Consultas extends javax.swing.JInternalFrame
       this.desconectarBD();
    }
 
-   private void btnEjecutarActionPerformed(ActionEvent evt) 
+   private void btnEjecutarActionPerformed(ActionEvent evt) throws BadLocationException 
    {
       this.refrescarTabla();      
    }
@@ -241,13 +249,20 @@ public class Consultas extends javax.swing.JInternalFrame
          }      
    }
 
-   private void refrescarTabla()
+   private void refrescarTabla() throws BadLocationException
    {
       try
-      {    
-    	  tabla.setSelectSql(this.txtConsulta.getText().trim());
-    	  completarArbol();  
-    	  tabla.createColumnModelFromQuery();    	    
+      {  
+    	  if(txtConsulta.getText(0, 6).toLowerCase().equals("select")){// Si el comando no modifica la base de datos, ingresa aqui.							 
+	    	  tabla.setSelectSql(this.txtConsulta.getText().trim());
+	    	  completarArbol();  
+	    	  tabla.createColumnModelFromQuery();    	    
+    	  }
+    	  else {
+    		 	PreparedStatement pstmt = (PreparedStatement) tabla.getConnection().prepareStatement(txtConsulta.getText());
+  				pstmt.execute();			
+  				
+  			}
     	  for (int i = 0; i < tabla.getColumnCount(); i++)
     	  { 		   		  
     		 if	 (tabla.getColumn(i).getType()==Types.TIME)  
