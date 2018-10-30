@@ -6,16 +6,10 @@ import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.sql.Types;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 
 import javax.swing.BorderFactory;
-import javax.swing.DefaultListModel;
 import javax.swing.JButton;
-import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -23,17 +17,10 @@ import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import javax.swing.border.BevelBorder;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeModel;
-import com.mysql.jdbc.Connection;
-import com.mysql.jdbc.DatabaseMetaData;
 import quick.dbtable.*;
 import javax.swing.JTree;
-import java.awt.Font;
-import javax.swing.border.CompoundBorder;
 import java.awt.FlowLayout;
 import javax.swing.border.EtchedBorder;
-import javax.swing.text.BadLocationException;  
 
 /**
 * This code was edited or generated using CloudGarden's Jigloo
@@ -62,16 +49,8 @@ public class Consultas extends javax.swing.JInternalFrame
    private String baseDatos = "banco";
    private String usuario = "admin";
    private String clave = "admin";
-   private	Connection Connecticut;
-   private	Statement sentencia;
-   
-
-	private JList<String> list;
-	private JList<String> list_1;
-	private DefaultListModel<String> DLM;
-	private DefaultListModel<String> DLM_1;
- 
-   public Consultas() 
+  
+  public Consultas() 
    {
       super();
       initGUI();
@@ -108,10 +87,9 @@ public class Consultas extends javax.swing.JInternalFrame
          flowLayout.setHgap(4);
          pnlConsulta.setBackground(Color.LIGHT_GRAY);
          
-         DLM = new DefaultListModel<String>();
-		 list = new JList<String>(DLM);  
-         
-         
+     
+        
+        
          getContentPane().add(pnlConsulta, BorderLayout.NORTH);
          {
         	 btnEjecutar = new JButton();
