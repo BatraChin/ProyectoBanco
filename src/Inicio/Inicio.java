@@ -55,8 +55,10 @@ public class Inicio {
 		btnAdmin.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				
-				JFrame admin = new AdminUI();
+				JFrame admin = new AdminUI(frmEbanks);
 				admin.setVisible(true);
+				frmEbanks.setEnabled(false);
+
 			}
 		});
 		btnAdmin.setBounds(72, 11, 157, 57);
@@ -66,8 +68,9 @@ public class Inicio {
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 
-				JFrame admin = new ATMUI();
+				JFrame admin = new ATMUI(frmEbanks);
 				admin.setVisible(true);
+				frmEbanks.setEnabled(false);
 			}
 		});
 		btnNewButton.setBounds(72, 79, 157, 57);
@@ -78,8 +81,10 @@ public class Inicio {
 			public void actionPerformed(ActionEvent arg0) {
 				
 
-				JFrame admin = new PrestamoUI();
+				JFrame admin = new PrestamoUI(frmEbanks);
 				admin.setVisible(true);
+				frmEbanks.setEnabled(false);
+
 			}
 		});
 		btnNewButton_1.setBounds(72, 147, 157, 74);

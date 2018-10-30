@@ -41,7 +41,6 @@ public class VentanaConsultasATM extends javax.swing.JFrame
             @Override
             public void windowClosing(WindowEvent e)
             {
-                System.out.println("Closed");
                 ventana.setVisible(true);
                 e.getWindow().dispose();
             }

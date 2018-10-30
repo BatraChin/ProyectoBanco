@@ -5,11 +5,17 @@ import java.awt.Color;
 import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
@@ -47,25 +53,13 @@ public class PrestamoUI extends javax.swing.JFrame
    private String baseDatos = "banco";
    private String usuario = "admin";
    private String clave = "admin";
+   private JFrame inicio;
   
-   /**
-   * Auto-generated main method to display this JFrame
-   */
-   public static void main(String[] args) 
-   {
-      SwingUtilities.invokeLater(new Runnable(){
-         public void run() 
-         {
-            PrestamoUI inst = new PrestamoUI();
-            inst.setLocationRelativeTo(null);
-            inst.setVisible(true);
-         }
-      });
-   }
    
-   public PrestamoUI() 
+   public PrestamoUI(JFrame ini) 
    {
       super();
+      inicio=ini;
       conectarBD();
       initGUI();
 
@@ -90,7 +84,7 @@ public class PrestamoUI extends javax.swing.JFrame
       {
          {
             this.setTitle("Banco");
-            this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+            //this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
          }
          {
             jDesktopPane1 = new Fondo();
@@ -101,7 +95,7 @@ public class PrestamoUI extends javax.swing.JFrame
          }
          {
            	empleado=new JLabel("Legajo");
-           	empleado.setForeground(Color.WHITE);
+           	empleado.setForeground(Color.BLACK);
            	empleado.setBackground(Color.WHITE);
            	empleado.setBounds(346,45,200,200);
            	jDesktopPane1.add(empleado);  
@@ -116,6 +110,14 @@ public class PrestamoUI extends javax.swing.JFrame
         	 ingresar=new JButton("Iniciar sesión");
         	 ingresar.setBounds(450,350,100,20);
         	 jDesktopPane1.add(ingresar);
+        	 
+        	 this.addWindowListener(new WindowAdapter(){
+                 public void windowClosing(WindowEvent e){
+                     inicio.setEnabled(true);
+                    
+                 }
+             });
+        	 
         	 ingresar.addActionListener(new ActionListener(){
              	public void actionPerformed(ActionEvent arg0)
              	{
@@ -147,7 +149,7 @@ public class PrestamoUI extends javax.swing.JFrame
          	{
          			
          		contraseña=new JLabel("Contraseña");
-         		contraseña.setForeground(Color.WHITE);
+         		contraseña.setForeground(Color.BLACK);
          		contraseña.setBackground(Color.WHITE);
          		contraseña.setSize(200,200);
          		contraseña.setBounds(320,165,200,200);
@@ -199,6 +201,27 @@ public class PrestamoUI extends javax.swing.JFrame
      }
    }
    
+   public static String getMD5(String input) 
+   {
+	   try 
+	   {
+		   MessageDigest md = MessageDigest.getInstance("MD5");
+		   byte[] messageDigest = md.digest(input.getBytes());
+		   BigInteger number = new BigInteger(1, messageDigest);
+		   String hashtext = number.toString(16);
+
+	   while (hashtext.length() < 32) 
+	   {
+		   hashtext = "0" + hashtext;
+	   }
+	   return hashtext;
+	   }
+	   catch (NoSuchAlgorithmException e) 
+	   {
+		   throw new RuntimeException(e);
+	   }
+   }
+   
    public boolean authenticate() throws SQLException 
    {
 	   Statement stmt = this.conexionBD.createStatement();
@@ -212,13 +235,16 @@ public class PrestamoUI extends javax.swing.JFrame
        
        char passArray[] = password.getPassword();
   
+
        for (int i = 0; i < passArray.length; i++) 
        {
            char c = passArray[i];
            if (!Character.isLetterOrDigit(c)) return false;
        }
 
-       String pass = new String(passArray); 
+       String pass = new String(passArray);
+       pass=getMD5(pass);
+
        String pass2 = null;
        
        while (rs.next ()) 
@@ -226,7 +252,6 @@ public class PrestamoUI extends javax.swing.JFrame
            pass2 = rs.getString ("password");
            
        }
-
        if ( pass.equals(pass2))
        {
     	   return true;

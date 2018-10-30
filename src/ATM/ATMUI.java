@@ -6,11 +6,17 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import javax.swing.JDesktopPane;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
@@ -27,21 +33,13 @@ public class ATMUI extends javax.swing.JFrame
 	private JLabel mensajeTarjeta,mensajePin;
 	private JPasswordField passwordT,passwordP;
 	private VentanaConsultasATM ventanaConsultasATM;
+	private JFrame inicio;
 	
-	public static void main(String[] args){
-		SwingUtilities.invokeLater(new Runnable(){
-			public void run()
-			{
-				ATMUI inst = new ATMUI();
-	            inst.setLocationRelativeTo(null);
-	            inst.setVisible(true);
-	        }
-	    });
-	}
 	
-	public ATMUI()
+	public ATMUI(JFrame ini)
 	{
 		super();
+		inicio=ini;
 		getContentPane().setBackground(Color.WHITE);
 		conectarBD();
 		initGUI();
@@ -53,7 +51,15 @@ public class ATMUI extends javax.swing.JFrame
 		{
 			javax.swing.UIManager.setLookAndFeel(javax.swing.UIManager.getSystemLookAndFeelClassName());
 			this.setTitle("Banco");
-	        this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+	  //      this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+
+	        this.addWindowListener(new WindowAdapter(){
+                public void windowClosing(WindowEvent e){
+                    inicio.setEnabled(true);
+                   
+                }
+            });
+	        
 	        this.addComponentListener(new ComponentAdapter() {
 	            public void componentHidden(ComponentEvent evt) 
 	            {
@@ -63,6 +69,7 @@ public class ATMUI extends javax.swing.JFrame
 	            {
 	               thisComponentShown(evt);
 	            }
+
 	         });
 	        
 	        jDesktopPane = new Fondo();
@@ -74,7 +81,8 @@ public class ATMUI extends javax.swing.JFrame
 	        mensajeTarjeta=new JLabel("Ingrese Número de Tarjeta");
 	        mensajeTarjeta.setSize(200,200);
 	        mensajeTarjeta.setBounds(44,30,140,30);
-	        mensajeTarjeta.setForeground(Color.white);
+	        mensajeTarjeta.setForeground(Color.black);
+	        mensajeTarjeta.setBackground(Color.white);
 	        jDesktopPane.add(mensajeTarjeta);
 	        
 	        passwordT = new JPasswordField();
@@ -82,7 +90,8 @@ public class ATMUI extends javax.swing.JFrame
 	        jDesktopPane.add(passwordT);
 	           	
 	        mensajePin = new JLabel("Ingrese PIN");
-	        mensajePin.setForeground(Color.white);
+	        mensajePin.setForeground(Color.black);
+	        mensajePin.setBackground(Color.white);
 	  	    mensajePin.setBounds(44, 123, 140, 30);
 	  	    jDesktopPane.add(mensajePin);
 	            
@@ -124,6 +133,27 @@ public class ATMUI extends javax.swing.JFrame
 	    }
 	}
 	
+	public static String getMD5(String input) 
+	   {
+		   try 
+		   {
+			   MessageDigest md = MessageDigest.getInstance("MD5");
+			   byte[] messageDigest = md.digest(input.getBytes());
+			   BigInteger number = new BigInteger(1, messageDigest);
+			   String hashtext = number.toString(16);
+
+		   while (hashtext.length() < 32) 
+		   {
+			   hashtext = "0" + hashtext;
+		   }
+		   return hashtext;
+		   }
+		   catch (NoSuchAlgorithmException e) 
+		   {
+			   throw new RuntimeException(e);
+		   }
+	}
+	
 	private boolean authenticate()
 	{
 		//INGRESO NRO TARJETA Y PIN
@@ -136,11 +166,13 @@ public class ATMUI extends javax.swing.JFrame
 		    
 			String sql = "SELECT count(nro_tarjeta) as cant " + 
 						"FROM tarjeta "+
-		    		   	"WHERE nro_tarjeta="+Integer.parseInt(passwordT.getText())+" AND pin='"+passwordP.getText()+"'";
+		    		   	"WHERE nro_tarjeta="+Integer.parseInt(passwordT.getText())+" AND pin='"+getMD5(passwordP.getText())+"'";
 		    
+
 			// se ejecuta la sentencia y se recibe un resultset
 		    ResultSet resultado = stmt.executeQuery(sql);
 		       
+			System.out.println(cant);		    
 		    if(resultado.next())
 		    {
 		    	cant= resultado.getInt("cant");
