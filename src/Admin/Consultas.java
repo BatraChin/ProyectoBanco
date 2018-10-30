@@ -261,18 +261,17 @@ public class Consultas extends javax.swing.JInternalFrame
 	   try
 		{    
 
-			String comando = new String(txtConsulta.getText());
+		   String comando = new String(txtConsulta.getText());
 			if(txtConsulta.getText(0, 6).toLowerCase().equals("select")){// Si el comando no modifica la base de datos, ingresa aqui.							 
-				// seteamos la consulta a partir de la cual se obtendrn los datos para llenar la tabla
+				// seteamos la consulta a partir de la cual se obtendrán los datos para llenar la tabla
 				tabla.setSelectSql(this.txtConsulta.getText().trim());		
 			}
 			else { //modifica la base de datos				
-				sentencia = Connecticut.createStatement();
-				sentencia.execute(comando);			
-				//String selec = list.getSelectedValue();
-				completarArbol();
-				//mostrarTablas();
-				//list.setSelectedIndex(DLM.indexOf(selec));
+				PreparedStatement pstmt = tabla.getConnection().prepareStatement(comando);
+				pstmt.execute();			
+				String selec = list.getSelectedValue();
+				mostrarTablas();
+				list.setSelectedIndex(DLM.indexOf(selec));
 			}
 			if(tabla.getSelectSql() != null) {
 				tabla.createColumnModelFromQuery();    	    
@@ -307,34 +306,58 @@ public class Consultas extends javax.swing.JInternalFrame
 	}
 	   
 	   
-   }
-     /* try
-      {    
-    	  tabla.setSelectSql(this.txtConsulta.getText().trim());
-    	  completarArbol();  
-    	  tabla.createColumnModelFromQuery();    	    
-    	  for (int i = 0; i < tabla.getColumnCount(); i++)
-    	  { 		   		  
-    		 if	 (tabla.getColumn(i).getType()==Types.TIME)  
-    		 {    		 
-    		  tabla.getColumn(i).setType(Types.CHAR);  
-  	       	 }
-    		 if	 (tabla.getColumn(i).getType()==Types.DATE)
-    		 {
-    		    tabla.getColumn(i).setDateFormat("dd/MM/YYYY");
-    		 }
-          }    	  
-    	  tabla.refresh();
-       }
-      catch (SQLException ex)
-      {
-         System.out.println("SQLException: " + ex.getMessage());
-         System.out.println("SQLState: " + ex.getSQLState());
-         System.out.println("VendorError: " + ex.getErrorCode());
-         JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this),
-                                       ex.getMessage() + "\n", 
-                                       "Error al ejecutar la consulta.",
-                                       JOptionPane.ERROR_MESSAGE); 
-      } 
-   } */
+   
+   private void mostrarTablas() {
+		DLM.clear();
+		Statement st = null;
+		ResultSet rs = null;
+		try {         				
+			st = (Statement) tabla.getConnection().createStatement();
+			rs = st.executeQuery("SELECT table_name FROM "
+					+ "information_schema.tables where "
+					+ "table_schema='parquimetros'");
+			boolean sig = rs.first();
+			while(sig) {
+				DLM.addElement(rs.getString(1));
+				sig = rs.next();												
+			}      			
+		} catch (SQLException ex) {
+			salidaError(ex);
+		} catch (NullPointerException ex2){
+			JOptionPane.showMessageDialog(null,
+					"Error",
+					"Error",
+					JOptionPane.ERROR_MESSAGE);
+		}
+		finally {					
+			if(st != null) {
+				try {
+					st.close();
+				} catch (SQLException ex) {
+					salidaError(ex);
+				}
+			}
+			if(rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException ex) {
+					salidaError(ex);
+				}
+			}
+		}
+	}
+   
+   private void salidaError(SQLException ex) {
+		JOptionPane.showMessageDialog(null,
+				ex.getMessage(),
+				"Error",
+				JOptionPane.ERROR_MESSAGE);
+		System.out.println("SQLException: " + ex.getMessage());
+		System.out.println("SQLState: " + ex.getSQLState());
+		System.out.println("VendorError: " + ex.getErrorCode());
+	}
+   
+  }
+
+
 
