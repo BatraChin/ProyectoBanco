@@ -131,10 +131,8 @@ public class Consultas extends javax.swing.JInternalFrame
              scrConsulta = new JScrollPane();
              pnlConsulta.add(scrConsulta);
          }
-         {
-        	 pnlConsulta.add(tree);
-         }
-         
+
+        
          {
         	tabla = new DBTable();
         	tabla.setForeground(Color.LIGHT_GRAY);
