@@ -302,6 +302,7 @@ public class creacion_prestamo extends javax.swing.JInternalFrame
 							        JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 							    if (response == JOptionPane.NO_OPTION) {
 							    	setClosed(true);
+							    	dispose();
 							    } else if (response == JOptionPane.YES_OPTION) {
 							    	monto.setText("");
 							    	monto.setEnabled(false);

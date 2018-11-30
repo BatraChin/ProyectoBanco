@@ -13,6 +13,7 @@ import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -20,9 +21,11 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
-import com.mysql.jdbc.Connection;
+import java.sql.Connection;
+//import com.mysql.jdbc.Connection;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
+import javax.swing.*;
 
 
 /**
@@ -57,6 +60,7 @@ public class pago_cuota extends javax.swing.JInternalFrame
    private JRadioButton[] opciones;
    private JButton pagar;
    private String nro_prestamo;
+   private JComboBox comboBox;
   
 
    /**
@@ -91,7 +95,7 @@ public class pago_cuota extends javax.swing.JInternalFrame
           this.setResizable(false);
           setVisible(true);
           BorderLayout thisLayout = new BorderLayout();
-          this.setTitle("Creación de préstamo");
+          this.setTitle("Pago de cuota");
           getContentPane().setLayout(thisLayout);
           this.setClosable(true);
           this.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
@@ -121,10 +125,18 @@ public class pago_cuota extends javax.swing.JInternalFrame
       		jDesktopPane2.setPreferredSize(new java.awt.Dimension(1000,1000));
       		jDesktopPane2.setEnabled(false);
       
-      		tipodoc = new JTextField();
+      		/*tipodoc = new JTextField();
       		tipodoc.setBackground(new Color(255, 255, 224));
       		tipodoc.setBounds(110,50,100,20);
       		jDesktopPane2.add(tipodoc);
+      		*/
+      		comboBox = new JComboBox();
+      		comboBox.setMaximumRowCount(2);
+      		comboBox.setFont(new Font("Tahoma", Font.PLAIN, 12));
+      		comboBox.setBounds(109, 55, 100, 20);
+      		comboBox.addItem("LE");
+      		comboBox.addItem("DNI");
+      		jDesktopPane2.add(comboBox);
           
       		nrodoc = new JTextField();
       		nrodoc.setBounds(350, 50,100,20);
@@ -177,6 +189,8 @@ public class pago_cuota extends javax.swing.JInternalFrame
              			{
              				try {
 								pagar_cuota(i+1);
+								dispose();
+							
 							} catch (SQLException e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
@@ -231,8 +245,8 @@ public class pago_cuota extends javax.swing.JInternalFrame
 	   
        String sql = "SELECT nro_cliente " + 
                     "FROM cliente " +
-                    "WHERE nro_doc = "+ Integer.parseInt(nrodoc.getText())+" AND tipo_doc LIKE '%"+ tipodoc.getText()+"%' "; 
-       
+                    //"WHERE nro_doc = "+ Integer.parseInt(nrodoc.getText())+" AND tipo_doc LIKE '%"+ tipodoc.getText()+"%' "; 
+                    "WHERE nro_doc = "+ Integer.parseInt(nrodoc.getText())+" AND tipo_doc LIKE '%"+ comboBox.getSelectedItem().toString()+"%' ";
        ResultSet rs = stmt.executeQuery(sql);
        
        if(rs.next())

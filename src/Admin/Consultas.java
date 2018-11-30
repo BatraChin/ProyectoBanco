@@ -5,8 +5,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.sql.Types;
+import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -21,6 +25,10 @@ import quick.dbtable.*;
 import javax.swing.JTree;
 import java.awt.FlowLayout;
 import javax.swing.border.EtchedBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+
+import com.mysql.jdbc.Connection;
 
 /**
 * This code was edited or generated using CloudGarden's Jigloo
@@ -40,10 +48,11 @@ public class Consultas extends javax.swing.JInternalFrame
    private JPanel pnlConsulta;
    private JTextArea txtConsulta;
    private JButton btnEjecutar;
-   private DBTable tabla;    
+   private DBTable tabla,tabla2;    
    private JScrollPane scrConsulta;
    private JButton button;
    private JTree tree;
+   private Connection conexionBD=null;
    private String driver ="com.mysql.jdbc.Driver";
    private String servidor = "localhost:3306";
    private String baseDatos = "banco";
@@ -127,11 +136,10 @@ public class Consultas extends javax.swing.JInternalFrame
              txtConsulta.setFont(new java.awt.Font("Monospaced",0,12));
              txtConsulta.setRows(10);
          }
-         {
+         
              scrConsulta = new JScrollPane();
              pnlConsulta.add(scrConsulta);
-         }
-
+         
         
          {
         	tabla = new DBTable();
@@ -140,9 +148,36 @@ public class Consultas extends javax.swing.JInternalFrame
         	tabla.getTable().setBackground(Color.LIGHT_GRAY);
         	tabla.setBackground(Color.LIGHT_GRAY);
             getContentPane().add(tabla, BorderLayout.CENTER);           
-            tabla.setEditable(false);       
-         }
-      } 
+            tabla.setEditable(false);   
+           
+            tabla.addMouseListener(new MouseAdapter() {
+                public void mousePressed(MouseEvent e) {
+                	int aux=tabla.getSelectedRow();
+                	String x=tabla.getValueAt(aux, 0).toString();
+                	tabla2.setSelectSql("SELECT * FROM "+x+";");
+                	try {
+						tabla2.refresh();
+					} catch (SQLException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+                 
+                    
+                }
+            })
+           ;
+            tabla2 = new DBTable();
+        	tabla2.setForeground(Color.LIGHT_GRAY);
+        	tabla2.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
+        	tabla2.getTable().setBackground(Color.LIGHT_GRAY);
+        	tabla2.setBackground(Color.LIGHT_GRAY);
+            getContentPane().add(tabla2, BorderLayout.EAST);           
+            tabla2.setEditable(false);   
+            
+         }}
+          
+            
+      
       catch (Exception e)
       {
          e.printStackTrace();
@@ -172,6 +207,8 @@ public class Consultas extends javax.swing.JInternalFrame
          {
             String uriConexion = "jdbc:mysql://" + servidor + "/" + baseDatos;  
             tabla.connectDatabase(driver, uriConexion, usuario, clave);
+            tabla2.connectDatabase(driver, uriConexion, usuario, clave);
+            this.conexionBD = (Connection) DriverManager.getConnection(uriConexion, usuario, clave);
            
          }
          catch (SQLException ex)
@@ -212,7 +249,18 @@ public class Consultas extends javax.swing.JInternalFrame
 		{    
 
 		   // seteamos la consulta a partir de la cual se obtendrán los datos para llenar la tabla
-	    	  tabla.setSelectSql(this.txtConsulta.getText().trim());
+		   		
+		   String consulta=this.txtConsulta.getText().trim();
+		   
+		   String[] consulAux=consulta.split(" ");
+		   if(consulAux[0].equals("update")||consulAux[0].equals("insert")||consulAux[0].equals("create")) {
+			   Statement stmt;
+				
+				stmt = conexionBD.createStatement();
+				stmt.executeUpdate(consulta);
+		   }else
+			   if(consulAux[0].equals("select")||consulAux[0].equals("show"))
+				   	tabla.setSelectSql(this.txtConsulta.getText().trim());
 
 	    	  // obtenemos el modelo de la tabla a partir de la consulta para 
 	    	  // modificar la forma en que se muestran de algunas columnas  
@@ -246,12 +294,7 @@ public class Consultas extends javax.swing.JInternalFrame
 					JOptionPane.ERROR_MESSAGE);
 
 		}
-	}
-	   
-	   
-   
-   
-   
+   }
    
   }
 
